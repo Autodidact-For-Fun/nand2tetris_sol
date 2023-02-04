@@ -1,6 +1,4 @@
 # nand2tetris_sol
-the solution of  From Nand to Tetris by myself
-
 | 单元      | 实现情况 |
 | ----------- | ----------- |
 | 组合逻辑单元 | ✅ |
