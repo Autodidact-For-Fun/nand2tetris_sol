@@ -8,5 +8,9 @@
 | Not And Or Xor Mux DMux| |
 | Not16 And16 Or16 Mux16| |
 | Or8Way Mux4Way16 Mux8Way16 DMux4Way DMux8Way| |
+| 时序逻辑单元 | ✅ |
+| DFF | |
 | 芯片 | ✅ |
 | HalfAdder FullAdder Add16 Inc16 ALU| |
+| Bit Register PC| |
+| RAM8 RAM64 RAM512 RAM4K RAM16K| |
