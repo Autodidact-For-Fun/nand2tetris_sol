@@ -43,4 +43,25 @@ CHIP ALU {
 
     PARTS:
    // Put you code here:
+   // pre-setting the x input
+   Mux16(a=x, b=false, sel=zx, out=x1);
+   Not16(in=x1, out=notx1);
+   Mux16(a=x1, b=notx1, sel=nx, out=x2);
+   // pre-setting the y input
+   Mux16(a=y, b=false, sel=zy, out=y1);
+   Not16(in=y1, out=noty1);
+   Mux16(a=y1, b=noty1, sel=ny, out=y2);
+   // select between computing + or &
+   Add16(a=x2, b=y2, out=xaddy);
+   And16(a=x2, b=y2, out=xandy);
+   Mux16(a=xandy, b=xaddy, sel=f, out=o1);
+   // post-setting the output
+   Not16(in=o1, out=noto1);
+   // Resulting ALU output
+   Mux16(a=o1, b=noto1, sel=no, out=out, out[15]=ng, out[0..7]=t1, out[8..15]=t2);
+   // all output bits are zero
+   Or8Way(in=t1, out=t3);
+   Or8Way(in=t2, out=t4);
+   Or(a=t3, b=t4, out=t5);
+   Not(in=t5, out=zr);
 }
