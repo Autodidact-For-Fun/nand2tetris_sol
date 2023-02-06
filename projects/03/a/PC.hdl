@@ -17,4 +17,13 @@ CHIP PC {
 
     PARTS:
     // Put your code here:
+    Register(in=t5, load=true, out=out, out=t1);
+    Inc16(in=t1, out=t2);
+    // else                    out[t+1] = out[t]
+    // else if (inc[t] == 1)   out[t+1] = out[t] + 1  (integer addition)
+    Mux16(a=t1, b=t2, sel=inc, out=t3);
+    // else if (load[t] == 1)  out[t+1] = in[t]
+    Mux16(a=t3, b=in, sel=load, out=t4);
+    // if      (reset[t] == 1) out[t+1] = 0
+    Mux16(a=t4, b=false, sel=reset, out=t5);
 }
