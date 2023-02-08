@@ -14,3 +14,5 @@
 | HalfAdder FullAdder Add16 Inc16 ALU| |
 | Bit Register PC| |
 | RAM8 RAM64 RAM512 RAM4K RAM16K| |
+| 汇编程序 | ✅ |
+| Fill.asm Mult.asm | |
