@@ -17,3 +17,8 @@
 | Memory CPU Computer| |
 | 汇编程序 | ✅ |
 | Fill.asm Mult.asm | |
+| 汇编器 | | 
+| VMCode Translator | |
+| Jack | |
+| OS | |
+
