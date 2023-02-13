@@ -18,7 +18,8 @@
 | 汇编程序 | ✅ |
 | Fill.asm Mult.asm | |
 | 汇编器 | | 
-| VMCode Translator | |
+| VMCode Translator | ✅ |
+| VMTranslator.py | |
 | Jack | |
 | OS | |
 
