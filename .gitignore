@@ -1,2 +1,3 @@
 projects/*/*.out
 tools/bin/*
+*/*/__pycache__/
