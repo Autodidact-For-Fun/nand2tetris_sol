@@ -1,3 +1,7 @@
 projects/*/*.out
 tools/bin/*
 */*/__pycache__/
+projects/07/*/*/*.asm
+projects/07/*/*/*.out
+projects/08/*/*/*.asm
+projects/08/*/*/*.out
