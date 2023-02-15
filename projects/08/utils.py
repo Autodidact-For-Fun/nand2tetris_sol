@@ -45,6 +45,7 @@ def push_to_asm(code, filename):
             return '@R4\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1'
     elif segment == 'static':
         # push static: *SP=*addr, SP++
+        print('push {} {}'.format(filename, i))
         return '@{}.{}\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1'.format(filename, i)
 
 def branch_to_asm(code):
@@ -56,7 +57,40 @@ def branch_to_asm(code):
         return '@SP\nM=M-1\nA=M\nD=M\n@{}\nD;JGT\n@{}\nD;JLT'.format(name, name)
     elif "goto" in code:
         return '@{}\n0;JMP'.format(name)
-
+    
+def function_to_asm(code):
+    name = code.split("/")[0].split(' ')[1]
+    nVars = int(code.split("/")[0].split(' ')[2])
+    function_label = '({})\n'.format(name)
+    local_vars = ''
+    for i in range(nVars):
+        local_vars += (push_to_asm("push constant 0", "xxx") + '\n')
+    
+    return function_label + local_vars
+    
+def return_to_asm(code, i):
+    return '@5\nD=A\n@LCL\nD=M-D\nA=D\nD=M\n@retAddr{}\nM=D\n \
+            @SP\nM=M-1\nA=M\nD=M\n@ARG\nA=M\nM=D\n@ARG\nD=M\n@SP\nM=D+1\n \
+            @1\nD=A\n@LCL\nD=M-D\nA=D\nD=M\n@THAT\nM=D\n \
+            @2\nD=A\n@LCL\nD=M-D\nA=D\nD=M\n@THIS\nM=D\n \
+            @3\nD=A\n@LCL\nD=M-D\nA=D\nD=M\n@ARG\nM=D\n \
+            @4\nD=A\n@LCL\nD=M-D\nA=D\nD=M\n@LCL\nM=D\n \
+            @retAddr{}\nA=M\n0;JMP'.format(i, i)
+            
+def call_to_asm(code, i):
+    name = code.split("/")[0].split(' ')[1]
+    nVars = int(code.split("/")[0].split(' ')[2])
+    gotoname = 'goto ' + name
+    
+    return '@callreturn{}\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1\n \
+            @LCL\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n \
+            @ARG\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n \
+            @THIS\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n \
+            @THAT\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n \
+            @5\nD=A\n@{}\nD=A+D\n@SP\nD=M-D\n@ARG\nM=D\n \
+            @SP\nD=M\n@LCL\nM=D\n \
+            '.format(i, nVars) + branch_to_asm(gotoname) + '\n(callreturn{})'.format(i)
+            
 def pop_to_asm(code, filename):
     """
     implement pop_to_asm function"""
@@ -80,6 +114,7 @@ def pop_to_asm(code, filename):
             return '@SP\nM=M-1\nA=M\nD=M\n@R4\nM=D'
     elif segment == 'static':
         # pop static: SP--, *addr=*SP
+        print('pop {} {}'.format(filename, i))
         return '@SP\nM=M-1\nA=M\nD=M\n@{}.{}\nM=D'.format(filename, i)
 
 
@@ -147,6 +182,7 @@ def vm_to_assmble(code_list, filename):
     """
     translate pop code to assembly code"""
     asm_codes = []
+    asm_codes.append('@256\nD=A\n@SP\nM=D\n')
     fn = filename
     for i, code in enumerate(code_list):
         if code.startswith('push'):
@@ -173,4 +209,10 @@ def vm_to_assmble(code_list, filename):
             asm_codes.append(neg_to_asm(code))
         elif code.startswith('label') or code.startswith('goto') or code.startswith('if-goto'):
             asm_codes.append(branch_to_asm(code))
+        elif code.startswith('function'):
+            asm_codes.append(function_to_asm(code))
+        elif code.startswith('return'):
+            asm_codes.append(return_to_asm(code, i))
+        elif code.startswith('call'):
+            asm_codes.append(call_to_asm(code, i))
     return asm_codes
